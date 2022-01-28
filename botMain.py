@@ -42,9 +42,12 @@ else:
                     print("Invalid token length. Please try again.")
 
 
-def embedMaker(title, description, color, image = None):
-    embed = discord.Embed(title=title, description=description, color=color)
-    if image != None:
+def embedMaker(title, color, description=None, image = None):
+    if description is not None:
+        embed = discord.Embed(title=title, description=description, color=color)
+    else:
+        embed = discord.Embed(title=title, color=color)
+    if image is not None:
         embed.set_image(url=image)
     return embed
     
@@ -61,9 +64,9 @@ async def answer(ctx, book = None, chapter = None, lesson = None, question = Non
     else:
         answer = str(bimsolutions(book, chapter, lesson, question, filename))
         if answer.startswith("Error"):
-            await ctx.send(embed=embedMaker(title="Error!", description=answer, color=bot.colorError))
+            await ctx.send(embed=embedMaker("Error!",bot.colorError,description=answer))
         else:
             print(answer)
             file = discord.File(os.path.abspath(filename), filename=filename)
-            await ctx.send(file=file, embed=embedMaker(title="Answer Found!", description=None, color=bot.colorSuccess, image="attachment://" + filename))
+            await ctx.send(file=file, embed=embedMaker("Answer Found!",bot.colorSuccess,None,"attachment://" + filename))
 bot.run(token)
